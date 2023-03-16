@@ -7,6 +7,7 @@ import { authResponse } from './auth.response';
 import { signupInput } from './signup.input';
 import { loginResponse } from './login.response';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
@@ -14,7 +15,8 @@ export class AuthService {
   constructor(
     @InjectRepository(authEntity)
     private readonly AuthRepo: Repository<authEntity>,
-    private readonly jwtService:JwtService
+    private readonly jwtService: JwtService,
+    private readonly userService:UserService
   ) {}
   async signUp(authInfo: signupInput): Promise<authEntity> {
     const { email, username, password } = authInfo;
@@ -22,6 +24,7 @@ export class AuthService {
     await this._validateUsername(username);
     const user = await this.AuthRepo.create({ email, username, password });
     await this.AuthRepo.save(user);
+    await this.userService.createProfile(user,{email,username})
     return user;
   }
 
@@ -44,6 +47,15 @@ export class AuthService {
       return user;
     }
     throw new BadRequestException("invalid credentials");
+  }
+  async FindOne(email:string) {
+    const user = await this.AuthRepo.findOneBy({ email });
+    if (user) {
+      return user
+    }
+    else {
+      throw new NotFoundException()
+    }
   }
 
   async _verifyEmailExist(email: string) {

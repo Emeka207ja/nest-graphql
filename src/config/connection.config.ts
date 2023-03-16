@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm"
 import { authEntity } from "src/auth/auth.entity";
+import { profileEntity } from "src/user/profile.entity";
 export const mongoConnection: TypeOrmModuleOptions = {
   type: "postgres",
     host: "localhost",
@@ -7,8 +8,8 @@ export const mongoConnection: TypeOrmModuleOptions = {
     username: "postgres",
     password: "imprint",
     database: "GraphQlDb",
-  entities: [authEntity],
+  entities: [authEntity,profileEntity],
   synchronize:true
-//   synchronise:true,
+  // synchronise:true,
 //   useUnifiedTopology:true
 };

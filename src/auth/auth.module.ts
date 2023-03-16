@@ -7,14 +7,15 @@ import { JwtModule } from "@nestjs/jwt"
 import {PassportModule} from "@nestjs/passport"
 import { authEntity } from './auth.entity';
 import { localStrategy } from './local.strategy';
+import { jwtStrategy } from './jwt.strategy';
 @Module({
-  providers: [AuthService, authResolver,localStrategy],
+  providers: [AuthService, authResolver,localStrategy,jwtStrategy],
   imports: [
     TypeOrmModule.forFeature([authEntity]),
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: `${process.env.JWT_SECRET}`,
+      secret: "imprint",
       signOptions:{expiresIn:"7d"}
     })
   ],

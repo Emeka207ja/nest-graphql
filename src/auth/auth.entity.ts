@@ -2,9 +2,12 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    BeforeInsert
+    BeforeInsert,
+    OneToOne,
+    JoinColumn
 } from "typeorm"
 import * as bcrypt from 'bcrypt';
+import { profileEntity } from "src/user/profile.entity";
 @Entity("auth")
  
 export class authEntity{
@@ -16,6 +19,9 @@ export class authEntity{
     username: string;
     @Column()
     password: string;
+    @OneToOne(() => profileEntity, (profile) => profile.auth)
+    @JoinColumn()
+    profile: profileEntity;
     
     async hashPassword(password: string):Promise<string> {
         const salt = await bcrypt.genSalt(12)
