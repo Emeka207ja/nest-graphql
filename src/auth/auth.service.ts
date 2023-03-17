@@ -8,6 +8,7 @@ import { signupInput } from './signup.input';
 import { loginResponse } from './login.response';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { passwordUpdateDto } from './dto/passwordUpdate.dto';
 
 
 @Injectable()
@@ -36,6 +37,24 @@ export class AuthService {
     const payload = { id: user.id, email: user.email } 
     console.log("secret",process.env.JWT_SECRET)
     return {token:this.jwtService.sign(payload)}
+  }
+
+  async updatePassword(id: string, passwordDetails: passwordUpdateDto) {
+    const { old_password, new_password } = passwordDetails
+    
+    const user = await this.AuthRepo.findOneBy({ id })
+
+    if (!user) throw new NotFoundException()
+
+    // check if old password marches with the one on db
+    const isValidPassword = await user.validatePassword(old_password, user.password)
+
+    if (!isValidPassword) throw new BadRequestException("invalid credentials")
+
+    const hash = await user.hashPassword(new_password);
+    user.password = hash;
+    await this.AuthRepo.save(user);
+    return {id:user.id}
   }
 
   async validateUser(

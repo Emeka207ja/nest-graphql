@@ -10,6 +10,7 @@ import { localAuthGuard } from "./local-auth.guard"
 import { jwtAuthGuard } from "./jwt-auth.guard"
 import { CurrentUser } from "./user.decorator"
 import { authEntity } from "./auth.entity"
+import { passwordUpdateResponse } from "./passwordUpdate.response"
 
 @Resolver((of)=>authType)
 export class authResolver{ 
@@ -43,5 +44,16 @@ export class authResolver{
         @Args("password") password:string
     ) {
         return await this.authService.login(email,password)
+    }
+
+    @Mutation(returns => passwordUpdateResponse)
+    @UseGuards(jwtAuthGuard)
+    async passwordUpdate(
+        @CurrentUser()user:authEntity,
+        @Args("old_password") old_password:string,
+        @Args("new_password") new_password:string
+    ) {
+        const {id} = user
+        return await this.authService.updatePassword(id,{old_password,new_password})
     }
 }
