@@ -17,8 +17,6 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
     email: string;
     id: string;
   }): Promise<authEntity | null> {
-    // console.log(ExtractJwt.fromAuthHeaderAsBearerToken());
-    // console.log('payload', payload);
     const user = await this.authService.FindOne(payload.email);
     return user;
   }

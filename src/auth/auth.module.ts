@@ -8,8 +8,10 @@ import {PassportModule} from "@nestjs/passport"
 import { authEntity } from './auth.entity';
 import { localStrategy } from './local.strategy';
 import { jwtStrategy } from './jwt.strategy';
+import { jwtAuthGuard } from './jwt-auth.guard';
 @Module({
-  providers: [AuthService, authResolver,localStrategy,jwtStrategy],
+  providers: [AuthService, authResolver, localStrategy, jwtStrategy,jwtAuthGuard],
+  exports:[jwtAuthGuard],
   imports: [
     TypeOrmModule.forFeature([authEntity]),
     UserModule,

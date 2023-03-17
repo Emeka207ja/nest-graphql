@@ -19,7 +19,8 @@ import { mongoConnection } from './config/connection.config';
     TypeOrmModule.forRoot(mongoConnection),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: true,
-      driver: ApolloDriver
+      driver: ApolloDriver,
+      context:({req})=>({req})
     }),
     
     UserModule,
