@@ -3,14 +3,17 @@ import {
     OneToOne,
     Column,
     PrimaryGeneratedColumn
+
 } from "typeorm";
 import {
     IsString,
     IsEmail,
     IsOptional,
-    IsPhoneNumber
+    IsPhoneNumber,
+    IsEnum
 } from "class-validator"
 import { authEntity } from "src/auth/auth.entity";
+import { Role } from "src/auth/enum/role.enum";
 
 @Entity("profile")
 export class profileEntity{
@@ -20,6 +23,11 @@ export class profileEntity{
     @Column({ unique: true, type: "varchar" })
     @IsEmail()
     email: string;
+
+    @Column({ type: "enum", enum:Role, array:true,default:[Role.User]})
+    @IsString()
+    @IsEnum(Role)
+    role: Role[]
 
     @Column({ type: "varchar", unique: true })
     @IsString()

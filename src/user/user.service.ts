@@ -6,12 +6,15 @@ import { Repository } from 'typeorm';
 import { profileEntity } from './profile.entity';
 import { authEntity } from 'src/auth/auth.entity';
 import { profileUpdateDto } from './updateProfile.dto';
+import { Role } from 'src/auth/enum/role.enum';
+
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(profileEntity)
     private readonly profileRepository: Repository<profileEntity>,
+   
   ) {}
 
   async createProfile(
@@ -42,5 +45,16 @@ export class UserService {
     assign(profile, profileData);
     await this.profileRepository.save(profile);
     return {id:profile.id}
+  }
+  
+  async updateUserRole(id: string,role:Role) {
+    const user = await this.profileRepository.findOneBy({ id })
+    if (!user) {
+      throw new NotFoundException("user not found")
+    }
+    user.role = [...user.role, role]
+    await this.profileRepository.save(user)
+    console.log(user)
+    return {id:user.id}
   }
 }

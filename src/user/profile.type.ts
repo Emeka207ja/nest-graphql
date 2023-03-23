@@ -1,4 +1,5 @@
-import { ObjectType, Field,ID } from "@nestjs/graphql";
+import { ObjectType, Field, ID } from "@nestjs/graphql";
+import { Role } from "src/auth/enum/role.enum";
 
 @ObjectType()
 
@@ -8,6 +9,9 @@ export class profile{
 
     @Field()
     username: string
+
+    @Field(type=>[String])
+    role: Role[]
     
     @Field()
     email: string

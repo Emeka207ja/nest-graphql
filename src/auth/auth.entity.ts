@@ -4,21 +4,50 @@ import {
     Column,
     BeforeInsert,
     OneToOne,
-    JoinColumn
+    JoinColumn,
+    Index
 } from "typeorm"
+import {
+    IsString,
+    IsOptional,
+    IsEnum,
+    IsBoolean,
+    IsEmail
+} from "class-validator";
 import * as bcrypt from 'bcrypt';
 import { profileEntity } from "src/user/profile.entity";
+import { Role } from "./enum/role.enum";
+import { type } from "os";
+
 @Entity("auth")
  
 export class authEntity{
     @PrimaryGeneratedColumn()
     id: string;
-    @Column({unique:true})
+
+    @Column({ unique: true })
+    @Index()
+    @IsEmail()
     email: string;
-    @Column({unique:true})
+
+    @Column({ unique: true })
+    @Index()
+    @IsString()
     username: string;
+
     @Column()
+    @IsString()
     password: string;
+
+    @Column({
+        type: "enum",
+        enum: Role,
+        array: true,
+        default:[Role.User]
+    })
+    @IsEnum(Role)
+    role: Role[]
+    
     @OneToOne(() => profileEntity, (profile) => profile.auth)
     @JoinColumn()
     profile: profileEntity;

@@ -9,6 +9,7 @@ import { loginResponse } from './login.response';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { passwordUpdateDto } from './dto/passwordUpdate.dto';
+import { Role } from './enum/role.enum';
 
 
 @Injectable()
@@ -90,4 +91,16 @@ export class AuthService {
       throw new BadRequestException('username already choosen');
     }
   }
+
+
+    async updateUserRole(id: string,role:Role) {
+    const user = await this.AuthRepo.findOneBy({ id })
+    if (!user) {
+      throw new NotFoundException("user not found")
+    }
+    user.role = [...user.role, role]
+    await this.AuthRepo.save(user)
+    return {id:user.id}
+  }
 }
+
